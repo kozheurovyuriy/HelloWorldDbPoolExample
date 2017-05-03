@@ -5,6 +5,7 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -24,9 +25,13 @@ public class DbConnector {
         prop = new Properties();
         try {
             try (InputStream in =
-                         Files.newInputStream(Paths.get("/home/kya/r/HelloWorldDbPoolExample/src/main/resources/database.properties")))
+                         Files.newInputStream(Paths.get(
+                                 Thread.currentThread().getContextClassLoader()
+                                         .getResource("database.properties").toURI())))
             {
                 prop.load(in);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
         } catch (IOException e) {
             e.printStackTrace();
